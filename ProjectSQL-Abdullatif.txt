@@ -1,0 +1,57 @@
+# DDL - Create
+create database store;
+create table countries(
+    code int primary key ,
+    name varchar(20) NOT NULL,
+    continent_name varchar(20) unique
+);
+create table users (
+    id int primary key ,
+    full_name varchar(20),
+    email varchar(20) unique,
+    gender char(1) check(gender = 'm' or gender = 'f'),
+    date_of_birth varchar(15),
+    created_at datetime default CURRENT_TIMESTAMP,
+    country_code int, 
+    foreign key (country_code) references countries(code)
+);
+create table orders(
+    id int primary key ,
+    user_id int,
+    status varchar(6) check(status = 'start' or status = 'finish'),
+    created_at datetime default CURRENT_TIMESTAMP,
+    foreign key (user_id) references users(id)
+);
+
+
+create table products(
+    id int primary key ,
+    name varchar (10) NOT NULL,
+    price int DEFAULT 0,
+    status varchar(10) check(status = 'valid' or status = 'expired'),
+    created_at datetime default CURRENT_TIMESTAMP
+);
+create table order_products(
+    order_id int,
+    product_id int,
+    quantity int DEFAULT 0,
+    primary key (order_id, product_id),
+    foreign key (order_id) references orders(id),
+    foreign key (product_id) references products(id)
+);
+
+
+# DML - Insert
+insert into countries values (966,'Saudi Arabia','asia');
+insert into users values (1,'saleh','saleh@gmail.com','m','1995',default,966);
+insert into orders values (4,1,'start',default);
+insert into products values (10 ,'iphone',4000,'valid',default);
+insert into order_products values (4,10,7);
+
+
+# DML - Update
+update countries set name='KSA' where code =966;
+
+# DML - Delete "here we shuld delete the child first in order_products then we can delete from products"
+delete from order_products where product_id = 10;
+delete from products where id= 10;
